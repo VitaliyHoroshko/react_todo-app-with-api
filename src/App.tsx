@@ -10,11 +10,13 @@ import Header from './components/Header';
 import TodoList from './components/TodoList';
 import Footer from './components/Footer';
 import ErrorNotification from './components/ErrorNotification';
+import { ErrorMessage } from './types/ErrorMessage';
+import { Filter } from './types/Filter';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState('');
-  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [filter, setFilter] = useState<Filter>(Filter.ALL);
   const [loading, setLoading] = useState(false);
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [updatingIds, setUpdatingIds] = useState<number[]>([]);
@@ -34,7 +36,7 @@ export const App: React.FC = () => {
       .then(todosFromServer => {
         setTimeout(() => setTodos(todosFromServer), 150);
       })
-      .catch(() => setError('Unable to load todos'))
+      .catch(() => setError(ErrorMessage.LOAD_TODOS))
       .finally(() => setLoading(false));
   }, []);
 
@@ -57,7 +59,7 @@ export const App: React.FC = () => {
     const trimmed = newTitle.trim();
 
     if (!trimmed) {
-      setError('Title should not be empty');
+      setError(ErrorMessage.EMPTY_TITLE);
 
       return;
     }
@@ -84,7 +86,7 @@ export const App: React.FC = () => {
       setNewTitle('');
       newTodoRef.current?.focus();
     } catch {
-      setError('Unable to add a todo');
+      setError(ErrorMessage.ADD_TODO);
       setTempTodo(null);
       newTodoRef.current?.focus();
     } finally {
@@ -100,7 +102,7 @@ export const App: React.FC = () => {
 
       newTodoRef.current?.focus();
     } catch {
-      setError('Unable to delete a todo');
+      setError(ErrorMessage.DELETE_TODO);
     } finally {
       setUpdatingIds(prev => prev.filter(i => i !== id));
     }
@@ -128,7 +130,7 @@ export const App: React.FC = () => {
         }),
       );
     } catch {
-      setError('Unable to update a todo');
+      setError(ErrorMessage.UPDATE_TODO);
     } finally {
       setUpdatingIds(prev => prev.filter(i => i !== id));
     }
@@ -143,7 +145,7 @@ export const App: React.FC = () => {
       setTodos(prev => prev.map(todo => (todo.id === id ? updatedTodo : todo)));
       setEditingId(null);
     } catch {
-      setError('Unable to update a todo');
+      setError(ErrorMessage.UPDATE_TODO);
     } finally {
       setUpdatingIds(prev => prev.filter(i => i !== id));
     }
@@ -175,7 +177,7 @@ export const App: React.FC = () => {
         }),
       );
     } catch {
-      setError('Unable to toggle all todos');
+      setError(ErrorMessage.TOGGLE_ALL);
     } finally {
       setUpdatingIds(prev => prev.filter(id => !idsToUpdate.includes(id)));
     }
@@ -212,7 +214,7 @@ export const App: React.FC = () => {
     if (!hasError) {
       newTodoRef.current?.focus();
     } else {
-      setError('Unable to delete a todo');
+      setError(ErrorMessage.DELETE_TODO);
     }
   };
 

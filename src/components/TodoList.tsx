@@ -2,10 +2,11 @@
 import React from 'react';
 import { Todo } from '../types/Todo';
 import TodoItem from './TodoItem';
+import { Filter } from '../types/Filter';
 
 type TodoListProps = {
   todos: Todo[];
-  filter: 'all' | 'active' | 'completed';
+  filter: Filter;
   tempTodo: Todo | null;
   updatingIds: number[];
   onToggle: (id: number) => void;
@@ -29,9 +30,9 @@ export const TodoList: React.FC<TodoListProps> = ({
 }) => {
   const visibleTodos = todos.filter(todo => {
     switch (filter) {
-      case 'active':
+      case Filter.ACTIVE:
         return !todo.completed;
-      case 'completed':
+      case Filter.COMPLETED:
         return todo.completed;
       default:
         return true;

@@ -47,6 +47,17 @@ export const TodoItem: React.FC<TodoItemProps> = ({
     onUpdate(trimmedTitle);
   };
 
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+
+    if (e.key === 'Escape') {
+      setNewTitle(todo.title);
+      onEdit(null);
+    }
+  };
+
   return (
     <div
       data-cy="Todo"
@@ -84,16 +95,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
           autoFocus
           disabled={isUpdating}
           onBlur={handleSubmit}
-          onKeyUp={e => {
-            if (e.key === 'Enter') {
-              handleSubmit();
-            }
-
-            if (e.key === 'Escape') {
-              setNewTitle(todo.title);
-              onEdit(null);
-            }
-          }}
+          onKeyUp={handleKeyUp}
         />
       )}
 
